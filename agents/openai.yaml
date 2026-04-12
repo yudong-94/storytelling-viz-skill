@@ -1,0 +1,7 @@
+interface:
+  display_name: "Storytelling Viz"
+  short_description: "Build a Plotly visualization and local preview artifacts"
+  default_prompt: "Use $storytelling-viz to review my dataset, recommend a chart, wait for my confirmation, and then build a polished Plotly visualization with index.html, preview.html, and insight bullets."
+
+policy:
+  allow_implicit_invocation: true
