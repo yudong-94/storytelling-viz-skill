@@ -134,23 +134,17 @@ These examples show the range of the skill across timeline, ranking, cohort, and
 
 ### Kilauea Eruption Timeline
 
-[![Kilauea eruption timeline thumbnail](/Users/hzdy1994/Documents/GitHub/storytelling-viz-skill/viz-example/kilauea-eruption-timeline/preview-desktop.png)](/Users/hzdy1994/Documents/GitHub/storytelling-viz-skill/viz-example/kilauea-eruption-timeline)
+[![Kilauea eruption timeline thumbnail](/viz-example/kilauea-eruption-timeline/preview-desktop.png)](/viz-example/kilauea-eruption-timeline)
 
 ### State Migration Net Balance 2023
 
-[![State migration net balance thumbnail](/Users/hzdy1994/Documents/GitHub/storytelling-viz-skill/viz-example/state-migration-net-balance-2023/preview-desktop.png)](/Users/hzdy1994/Documents/GitHub/storytelling-viz-skill/viz-example/state-migration-net-balance-2023)
+[![State migration net balance thumbnail](/viz-example/state-migration-net-balance-2023/preview-desktop.png)](/viz-example/state-migration-net-balance-2023)
 
-### Japan Prefecture Bump Top 6
+### Top 6 Japan Prefecture Destinations by US Visitors
 
-[![Japan prefecture bump chart thumbnail](/Users/hzdy1994/Documents/GitHub/storytelling-viz-skill/viz-example/japan-prefecture-bump-top6/preview-desktop.png)](/Users/hzdy1994/Documents/GitHub/storytelling-viz-skill/viz-example/japan-prefecture-bump-top6)
+[![Japan prefecture bump chart thumbnail](/viz-example/japan-prefecture-bump-top6/preview-desktop.png)](/viz-example/japan-prefecture-bump-top6)
 
-### Marriage By Age And Education
+### Marriage Rate By Age And Education
 
-[![Marriage by age and education thumbnail](/Users/hzdy1994/Documents/GitHub/storytelling-viz-skill/viz-example/marriage-by-age-education/preview-desktop.png)](/Users/hzdy1994/Documents/GitHub/storytelling-viz-skill/viz-example/marriage-by-age-education)
+[![Marriage by age and education thumbnail](/viz-example/marriage-by-age-education/preview-desktop.png)](/viz-example/marriage-by-age-education)
 
-## Suggestions For Keeping The Repo Tight
-
-- Keep only one source-of-truth workflow in `SKILL.md`; avoid duplicating instruction logic in README text.
-- Treat `viz-example/` as a curated gallery, not a dumping ground for every test chart.
-- Prefer examples with strong public sources over examples built from mixed-year or article-mediated tables.
-- If you want to tighten the repo further, remove tracked `.DS_Store` files from version control so the repo looks clean when shared.
