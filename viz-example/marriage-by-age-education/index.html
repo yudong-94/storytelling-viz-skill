@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Married Share by Age and Education</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    :root {
+      --bg: #f4ede3;
+      --panel: rgba(255, 251, 245, 0.93);
+      --ink: #1f292b;
+      --muted: #5d6b6e;
+      --total: #334148;
+      --less: #b85d38;
+      --hs: #8f7d38;
+      --some: #4f8a77;
+      --ba: #6d56b3;
+      --grid: rgba(31, 41, 43, 0.12);
+      --rule: rgba(31, 41, 43, 0.08);
+      --accent: #b84a1e;
+      --shadow: 0 22px 54px rgba(63, 58, 50, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      background:
+        radial-gradient(circle at top right, rgba(109, 86, 179, 0.08), transparent 22%),
+        radial-gradient(circle at 14% 18%, rgba(184, 93, 56, 0.08), transparent 20%),
+        linear-gradient(180deg, #f8f3eb 0%, var(--bg) 100%);
+    }
+
+    .frame {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 28px 18px 20px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--rule);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 28px 28px 14px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      font: 700 0.78rem/1.2 Arial, Helvetica, sans-serif;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 3.4vw, 2.7rem);
+      line-height: 1.02;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      max-width: 20ch;
+    }
+
+    .subtitle {
+      margin: 14px 0 0;
+      max-width: 78ch;
+      font: 400 1rem/1.58 Arial, Helvetica, sans-serif;
+      color: var(--muted);
+    }
+
+    .chart-wrap {
+      padding: 10px 8px 0;
+    }
+
+    #chart {
+      width: 100%;
+      height: 620px;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      padding: 8px 24px 10px;
+    }
+
+    .summary-card {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.58);
+      border: 1px solid rgba(31, 41, 43, 0.08);
+      min-height: 88px;
+    }
+
+    .summary-label {
+      margin: 0 0 6px;
+      font: 700 0.72rem/1.2 Arial, Helvetica, sans-serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .summary-value {
+      margin: 0;
+      font: 600 1.22rem/1.15 Georgia, "Times New Roman", serif;
+      color: var(--ink);
+    }
+
+    .summary-note {
+      margin: 6px 0 0;
+      font: 400 0.92rem/1.46 Arial, Helvetica, sans-serif;
+      color: var(--muted);
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 24px 24px;
+      border-top: 1px solid var(--rule);
+      font: 400 0.88rem/1.5 Arial, Helvetica, sans-serif;
+      color: var(--muted);
+    }
+
+    .footer a { color: var(--ink); }
+
+    @media (max-width: 760px) {
+      .frame { padding: 16px 10px 16px; }
+      .panel { border-radius: 18px; }
+      .header { padding: 22px 18px 12px; }
+      .chart-wrap { padding: 6px 0 0; }
+      #chart { height: 560px; }
+      h1 { max-width: none; }
+      .subtitle { max-width: none; }
+      .summary { grid-template-columns: 1fr; padding: 8px 18px 8px; }
+      .footer { flex-direction: column; padding: 14px 18px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main id="viz-root" class="frame">
+    <section class="panel">
+      <header class="header">
+        <p class="eyebrow">BLS Marital Status Cohort</p>
+        <h1>Married share by age and education</h1>
+        <p class="subtitle">
+          Americans born from 1957 to 1964, tracked at ages 24, 34, 44, 54, and 58. The chart shows the share married within each education group, with the total cohort as a reference line.
+        </p>
+      </header>
+      <div class="chart-wrap">
+        <div id="chart" aria-label="Line chart of married share by age and education"></div>
+      </div>
+      <section class="summary" aria-label="Key context">
+        <article class="summary-card">
+          <p class="summary-label">Age 24</p>
+          <p class="summary-value">Bachelor's 31% married</p>
+          <p class="summary-note">At age 24, the highest-education group was least likely to be married.</p>
+        </article>
+        <article class="summary-card">
+          <p class="summary-label">Age 58</p>
+          <p class="summary-value">Bachelor's 74% married</p>
+          <p class="summary-note">By age 58, the same group was most likely to be married, well above the cohort total of 64%.</p>
+        </article>
+        <article class="summary-card">
+          <p class="summary-label">Read this as</p>
+          <p class="summary-value">A crossover by education</p>
+          <p class="summary-note">Higher education is associated with lower marriage rates at 24 but higher marriage rates from age 34 onward.</p>
+        </article>
+      </section>
+      <footer class="footer">
+        <div>
+          Source: <a href="https://www.bls.gov/opub/ted/2025/at-58-years-of-age-64-percent-of-americans-born-during-1957-64-were-married.htm" target="_blank" rel="noreferrer">U.S. Bureau of Labor Statistics, The Economics Daily, September 18, 2025</a>.
+          Values shown from the provided dataset.
+        </div>
+        <div>Chart logic: married share only; not-married is omitted because it is the direct complement to 100 percent.</div>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    const ages = [24, 34, 44, 54, 58];
+
+    const series = [
+      {
+        name: "Total",
+        values: [43.3, 67.7, 70.4, 65.8, 64.4],
+        color: "#334148",
+        width: 2.6,
+        dash: "dot",
+        labelPos: "middle right"
+      },
+      {
+        name: "Less than high school",
+        values: [49.2, 58.6, 55.2, 52.6, 46.8],
+        color: "#b85d38",
+        width: 2.6,
+        labelPos: "bottom right"
+      },
+      {
+        name: "High school diploma",
+        values: [49.6, 66.3, 67.1, 63.2, 61.4],
+        color: "#8f7d38",
+        width: 2.4,
+        labelPos: "bottom right"
+      },
+      {
+        name: "Some college/associate",
+        values: [45.9, 66.8, 69.6, 62.4, 62.6],
+        color: "#4f8a77",
+        width: 2.4,
+        labelPos: "top right"
+      },
+      {
+        name: "Bachelor's or higher",
+        values: [31.1, 73.2, 79.0, 75.2, 74.3],
+        color: "#6d56b3",
+        width: 3.2,
+        labelPos: "middle right"
+      }
+    ];
+
+    const traces = series.map((s) => ({
+      type: "scatter",
+      mode: "lines+markers+text",
+      name: s.name,
+      x: ages,
+      y: s.values,
+      line: { color: s.color, width: s.width, dash: s.dash || "solid" },
+      marker: {
+        color: s.color,
+        size: s.name === "Bachelor's or higher" ? 9 : 7,
+        line: { color: "#fffaf2", width: 1.8 }
+      },
+      text: ["", "", "", "", s.name],
+      textposition: ["top center", "top center", "top center", "top center", s.labelPos],
+      textfont: {
+        family: "Arial, Helvetica, sans-serif",
+        size: s.name === "Bachelor's or higher" ? 13 : 12,
+        color: s.color
+      },
+      cliponaxis: false,
+      hovertemplate: `<b>${s.name}</b><br>Age %{x}: %{y:.1f}% married<extra></extra>`
+    }));
+
+    const layout = {
+      paper_bgcolor: "rgba(0,0,0,0)",
+      plot_bgcolor: "rgba(0,0,0,0)",
+      margin: { l: 62, r: 156, t: 26, b: 56 },
+      showlegend: false,
+      xaxis: {
+        tickvals: ages,
+        range: [23, 61.2],
+        tickfont: { family: "Arial, Helvetica, sans-serif", size: 13, color: "#5d6b6e" },
+        title: {
+          text: "Age",
+          font: { family: "Arial, Helvetica, sans-serif", size: 14, color: "#5d6b6e" },
+          standoff: 10
+        },
+        gridcolor: "rgba(31, 41, 43, 0.12)",
+        zeroline: false
+      },
+      yaxis: {
+        range: [25, 82],
+        tickvals: [30, 40, 50, 60, 70, 80],
+        ticksuffix: "%",
+        tickfont: { family: "Arial, Helvetica, sans-serif", size: 13, color: "#5d6b6e" },
+        title: {
+          text: "Share married",
+          font: { family: "Arial, Helvetica, sans-serif", size: 14, color: "#5d6b6e" },
+          standoff: 10
+        },
+        gridcolor: "rgba(31, 41, 43, 0.12)",
+        zeroline: false
+      },
+      annotations: [
+        {
+          x: 24,
+          y: 32.4,
+          text: "Bachelor's group starts lowest at 24",
+          showarrow: false,
+          font: { family: "Arial, Helvetica, sans-serif", size: 12, color: "#5d6b6e" },
+          xanchor: "left",
+          yanchor: "bottom"
+        },
+        {
+          x: 44,
+          y: 79,
+          text: "Then becomes the highest-married group",
+          showarrow: false,
+          font: { family: "Arial, Helvetica, sans-serif", size: 12, color: "#5d6b6e" },
+          xanchor: "center",
+          yanchor: "bottom"
+        }
+      ]
+    };
+
+    const config = {
+      responsive: true,
+      displayModeBar: false
+    };
+
+    Plotly.newPlot("chart", traces, layout, config).then(() => {
+      const root = document.getElementById("viz-root");
+      const reportHeight = () => {
+        window.parent.postMessage({ type: "viz-height", height: root.getBoundingClientRect().height + 8 }, "*");
+      };
+      reportHeight();
+      if ("ResizeObserver" in window) {
+        new ResizeObserver(reportHeight).observe(root);
+      } else {
+        window.addEventListener("resize", reportHeight);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preview | Sun Belt states led net migration gains in 2023</title>
+  <style>
+    :root {
+      --bg: #efe7db;
+      --ink: #1d2a2d;
+      --muted: #5a696b;
+      --panel: rgba(255, 251, 246, 0.88);
+      --rule: rgba(29, 42, 45, 0.12);
+      --accent: #b84a1e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, rgba(184, 74, 30, 0.08), transparent 26%),
+        linear-gradient(180deg, #f7f1e7 0%, var(--bg) 100%);
+    }
+
+    .page {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 26px 16px 40px;
+    }
+
+    .intro { margin: 0 0 20px; }
+
+    .kicker {
+      margin: 0 0 10px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font: 600 clamp(2.5rem, 5.3vw, 5rem)/0.95 Georgia, "Times New Roman", serif;
+      letter-spacing: -0.03em;
+      max-width: 16ch;
+    }
+
+    .deck {
+      margin: 0;
+      line-height: 1.62;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 1.8vw, 1.18rem);
+      max-width: 72ch;
+    }
+
+    .artifact {
+      background: var(--panel);
+      border: 1px solid var(--rule);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 22px 50px rgba(49, 58, 61, 0.10);
+    }
+
+    iframe {
+      display: block;
+      width: 100%;
+      height: 1160px;
+      border: 0;
+      background: transparent;
+    }
+
+    .notes {
+      display: grid;
+      gap: 10px;
+      padding: 18px 20px 22px;
+      border-top: 1px solid var(--rule);
+      background: rgba(255, 251, 246, 0.68);
+    }
+
+    .notes p { margin: 0; line-height: 1.55; color: var(--muted); }
+    .notes strong { color: var(--ink); }
+    .notes a { color: var(--ink); }
+
+    @media (max-width: 760px) {
+      .page { padding: 18px 10px 24px; }
+      h1 { max-width: none; }
+      .artifact { border-radius: 18px; }
+      iframe { height: 1320px; }
+      .notes { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="intro">
+      <p class="kicker">2023 ACS State Migration</p>
+      <h1>Sun Belt states led net interstate migration gains in 2023</h1>
+      <p class="deck">
+        Texas and Florida recorded the largest net gains from interstate migration, followed by North Carolina and South Carolina. The largest net losses were concentrated in California, New York, and a smaller group of Northeastern and Mid-Atlantic states.
+      </p>
+    </section>
+    <section class="artifact">
+      <iframe id="viz-frame" src="./index.html" title="Sun Belt states led net interstate migration gains in 2023"></iframe>
+      <div class="notes">
+        <p><strong>Takeaway:</strong> The biggest 2023 interstate gains clustered in the South and Southwest, while the largest losses were concentrated in California, New York, Illinois, and New Jersey.</p>
+        <p><strong>Scope:</strong> This view uses the Census workbook’s state summary and shows the eight largest net gains and eight largest net losses among the 50 states. Net migration is defined as in-movers minus out-movers.</p>
+        <p><strong>Source:</strong> <a href="https://www.census.gov/data/tables/time-series/demo/geographic-mobility/state-to-state-migration.html" target="_blank" rel="noreferrer">U.S. Census Bureau, State-to-State Migration Flows: 2023 American Community Survey 1-Year Estimates</a>.</p>
+      </div>
+    </section>
+  </main>
+  <script>
+    const frame = document.getElementById("viz-frame");
+    window.addEventListener("message", (event) => {
+      if (!event.data || event.data.type !== "viz-height") return;
+      const nextHeight = Math.max(720, Math.min(1800, Number(event.data.height) || 1160));
+      if (Math.abs(frame.offsetHeight - nextHeight) > 6) {
+        frame.style.height = `${nextHeight}px`;
+      }
+    });
+  </script>
+</body>
+</html>

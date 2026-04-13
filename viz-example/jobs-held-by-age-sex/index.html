@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Most Job Switching Happened Before 25</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    :root {
+      --bg: #f4eee5;
+      --panel: rgba(255, 251, 245, 0.92);
+      --ink: #1f292b;
+      --muted: #5d6b6e;
+      --male: #c96b3b;
+      --female: #2f7c8f;
+      --total: #343a40;
+      --grid: rgba(31, 41, 43, 0.12);
+      --accent: #b84a1e;
+      --rule: rgba(31, 41, 43, 0.08);
+      --shadow: 0 22px 54px rgba(63, 58, 50, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      background:
+        radial-gradient(circle at top right, rgba(201, 107, 59, 0.10), transparent 24%),
+        radial-gradient(circle at 12% 18%, rgba(47, 124, 143, 0.08), transparent 22%),
+        linear-gradient(180deg, #f8f3ec 0%, var(--bg) 100%);
+    }
+
+    .frame {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 28px 18px 20px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--rule);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 28px 28px 14px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      font: 700 0.78rem/1.2 Arial, Helvetica, sans-serif;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.1rem);
+      line-height: 1.02;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      max-width: 12ch;
+    }
+
+    .subtitle {
+      margin: 14px 0 0;
+      max-width: 64ch;
+      font: 400 1rem/1.55 Arial, Helvetica, sans-serif;
+      color: var(--muted);
+    }
+
+    .chart-wrap {
+      padding: 12px 12px 0;
+    }
+
+    #chart {
+      width: 100%;
+      height: 560px;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      padding: 12px 24px 10px;
+    }
+
+    .summary-card {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.56);
+      border: 1px solid rgba(31, 41, 43, 0.08);
+      min-height: 82px;
+    }
+
+    .summary-label {
+      margin: 0 0 6px;
+      font: 700 0.72rem/1.2 Arial, Helvetica, sans-serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .summary-value {
+      margin: 0;
+      font: 600 1.3rem/1.15 Georgia, "Times New Roman", serif;
+      color: var(--ink);
+    }
+
+    .summary-note {
+      margin: 6px 0 0;
+      font: 400 0.92rem/1.45 Arial, Helvetica, sans-serif;
+      color: var(--muted);
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 24px 24px;
+      border-top: 1px solid var(--rule);
+      font: 400 0.88rem/1.5 Arial, Helvetica, sans-serif;
+      color: var(--muted);
+    }
+
+    .footer a { color: var(--ink); }
+
+    @media (max-width: 760px) {
+      .frame { padding: 16px 10px 16px; }
+      .panel { border-radius: 18px; }
+      .header { padding: 22px 18px 12px; }
+      .chart-wrap { padding: 8px 4px 0; }
+      #chart { height: 620px; }
+      .summary { grid-template-columns: 1fr; padding: 8px 18px 8px; }
+      .footer { flex-direction: column; padding: 14px 18px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main id="viz-root" class="frame">
+    <section class="panel">
+      <header class="header">
+        <p class="eyebrow">BLS Job Histories</p>
+        <h1>Average jobs held by age band and sex</h1>
+        <p class="subtitle">
+          Americans born from 1957 to 1964, split by age bucket and sex, with total values shown as reference markers.
+        </p>
+      </header>
+      <div class="chart-wrap">
+        <div id="chart" aria-label="Grouped horizontal bar chart of average jobs held by age group and sex"></div>
+      </div>
+      <section class="summary" aria-label="Key context">
+        <article class="summary-card">
+          <p class="summary-label">Early-career share</p>
+          <p class="summary-value">43.4%</p>
+          <p class="summary-note">The total cohort averaged 5.6 jobs from ages 18 to 24 out of 12.9 overall.</p>
+        </article>
+        <article class="summary-card">
+          <p class="summary-label">Total jobs</p>
+          <p class="summary-value">Men 13.1 · Women 12.7</p>
+          <p class="summary-note">The lifetime gap is small compared with the age-driven drop in job counts.</p>
+        </article>
+        <article class="summary-card">
+          <p class="summary-label">Read this as</p>
+          <p class="summary-value">Age buckets, not a timeline</p>
+          <p class="summary-note">Jobs spanning multiple age groups are counted in each age group, so the row values do not add up to the total.</p>
+        </article>
+      </section>
+      <footer class="footer">
+        <div>
+          Source: <a href="https://www.bls.gov/opub/ted/2025/people-born-from-1957-to-1964-held-an-average-of-12-9-jobs-from-ages-18-to-58.htm" target="_blank" rel="noreferrer">U.S. Bureau of Labor Statistics, The Economics Daily, September 26, 2025</a>.
+          Values shown from the provided dataset.
+        </div>
+        <div>Chart logic: average number of jobs held by the 1957-64 birth cohort, split by age band and sex, with total values shown as reference markers.</div>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    const rows = [
+      { age: "Ages 18 to 24", total: 5.6, men: 5.8, women: 5.5 },
+      { age: "Ages 25 to 34", total: 4.5, men: 4.7, women: 4.3 },
+      { age: "Ages 35 to 44", total: 2.9, men: 2.9, women: 2.9 },
+      { age: "Ages 45 to 54", total: 2.2, men: 2.1, women: 2.2 },
+      { age: "Ages 55 to 58", total: 1.3, men: 1.3, women: 1.2 }
+    ];
+
+    const ages = rows.map((d) => d.age);
+
+    const womenTrace = {
+      type: "bar",
+      orientation: "h",
+      name: "Women",
+      y: ages,
+      x: rows.map((d) => d.women),
+      marker: { color: "#2f7c8f" },
+      width: 0.28,
+      offsetgroup: "women",
+      hovertemplate: "Women<br>%{y}: %{x:.1f} jobs<extra></extra>"
+    };
+
+    const menTrace = {
+      type: "bar",
+      orientation: "h",
+      name: "Men",
+      y: ages,
+      x: rows.map((d) => d.men),
+      marker: { color: "#c96b3b" },
+      width: 0.28,
+      offsetgroup: "men",
+      hovertemplate: "Men<br>%{y}: %{x:.1f} jobs<extra></extra>"
+    };
+
+    const totalTrace = {
+      type: "scatter",
+      mode: "markers",
+      name: "Total",
+      y: ages,
+      x: rows.map((d) => d.total),
+      marker: {
+        symbol: "diamond",
+        size: 10,
+        color: "#343a40",
+        line: { color: "#fffaf2", width: 2 }
+      },
+      hovertemplate: "Total<br>%{y}: %{x:.1f} jobs<extra></extra>"
+    };
+
+    const layout = {
+      barmode: "group",
+      paper_bgcolor: "rgba(0,0,0,0)",
+      plot_bgcolor: "rgba(0,0,0,0)",
+      margin: { l: 122, r: 48, t: 18, b: 56 },
+      showlegend: true,
+      legend: {
+        orientation: "h",
+        x: 0,
+        y: 1.1,
+        font: { family: "Arial, sans-serif", size: 12, color: "#5d6b6e" }
+      },
+      xaxis: {
+        title: {
+          text: "Average number of jobs held",
+          font: { family: "Arial, sans-serif", size: 13, color: "#5d6b6e" }
+        },
+        range: [0, 6.4],
+        tickvals: [0, 1, 2, 3, 4, 5, 6],
+        tickfont: { family: "Arial, sans-serif", size: 12, color: "#5d6b6e" },
+        gridcolor: "rgba(31, 41, 43, 0.10)",
+        zeroline: false
+      },
+      yaxis: {
+        autorange: "reversed",
+        tickfont: { family: "Arial, sans-serif", size: 12, color: "#1f292b" },
+        showgrid: false
+      },
+      annotations: [
+        {
+          x: 5.6,
+          y: "Ages 18 to 24",
+          xref: "x",
+          yref: "y",
+          text: "Over 40% of all jobs were held here",
+          showarrow: true,
+          arrowcolor: "#b84a1e",
+          arrowwidth: 1.5,
+          arrowhead: 0,
+          ax: 70,
+          ay: -32,
+          bgcolor: "rgba(255,250,242,0.94)",
+          bordercolor: "rgba(184,74,30,0.16)",
+          borderpad: 5,
+          font: { family: "Arial, sans-serif", size: 12, color: "#1f292b" }
+        }
+      ]
+    };
+
+    const config = { displayModeBar: false, responsive: true };
+
+    const chartEl = document.getElementById("chart");
+    const rootEl = document.getElementById("viz-root");
+
+    function reportHeight() {
+      const height = Math.ceil(rootEl.getBoundingClientRect().height);
+      if (window.parent !== window) {
+        window.parent.postMessage({ type: "viz-height", height }, "*");
+      }
+    }
+
+    Plotly.newPlot(chartEl, [womenTrace, menTrace, totalTrace], layout, config).then(() => {
+      reportHeight();
+      window.addEventListener("resize", reportHeight);
+      if ("ResizeObserver" in window) {
+        const observer = new ResizeObserver(reportHeight);
+        observer.observe(rootEl);
+      }
+    });
+  </script>
+</body>
+</html>

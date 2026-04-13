@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Population Doesn't Equal Households</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    :root {
+      --bg: #f4efe7;
+      --paper: #fffaf2;
+      --panel: rgba(255, 250, 242, 0.84);
+      --text: #171513;
+      --muted: #60574f;
+      --line: #ddd2c5;
+      --border: rgba(91, 69, 46, 0.12);
+      --cool: #4e79a7;
+      --mid: #7dbb73;
+      --warm: #f28e2b;
+      --accent: #2f6c98;
+      --link: #2c8fce;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 12% 14%, rgba(78, 121, 167, 0.10), transparent 22%),
+        radial-gradient(circle at 86% 16%, rgba(242, 142, 43, 0.10), transparent 18%),
+        linear-gradient(180deg, #fbf7f0 0%, var(--bg) 100%);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 18px 16px;
+    }
+
+    .hero {
+      margin-bottom: 16px;
+      padding: 16px 16px 12px;
+      border-radius: 26px;
+      background:
+        linear-gradient(135deg, rgba(255, 250, 242, 0.95), rgba(247, 241, 232, 0.9)),
+        radial-gradient(circle at 20% 22%, rgba(78, 121, 167, 0.08), transparent 26%);
+      border: 1px solid var(--border);
+      box-shadow: 0 18px 48px rgba(75, 49, 27, 0.08);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(23, 21, 19, 0.05);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .chart-title {
+      margin: 0 0 10px;
+      font-family: "Canela", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+      font-size: 37px;
+      line-height: 1.01;
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      color: var(--text);
+      max-width: none;
+    }
+
+    .chart-subtitle {
+      margin: 0 0 10px;
+      font-size: 18px;
+      line-height: 1.45;
+      color: #2f2924;
+      max-width: 74ch;
+    }
+
+    .chart-note {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.45;
+      color: var(--muted);
+      max-width: 72ch;
+    }
+
+    .hero-side {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .summary-card,
+    .insight-card,
+    .chart-shell {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      box-shadow: 0 14px 36px rgba(75, 49, 27, 0.06);
+    }
+
+    .summary-card {
+      border-radius: 18px;
+      padding: 14px 14px 12px;
+    }
+
+    .summary-label {
+      margin-bottom: 6px;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .summary-value {
+      font-family: "Canela", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+      font-size: 29px;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .summary-detail {
+      margin-top: 5px;
+      font-size: 13px;
+      line-height: 1.38;
+      color: var(--muted);
+    }
+
+    .insight-card {
+      border-radius: 18px;
+      padding: 14px 14px 12px;
+      background:
+        linear-gradient(180deg, rgba(255, 251, 245, 0.94), rgba(248, 241, 231, 0.94));
+    }
+
+    .insight-title {
+      margin: 0 0 8px;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .insight-body {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.45;
+      color: #3b342d;
+    }
+
+    .chart-shell {
+      border-radius: 26px;
+      padding: 14px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(78, 121, 167, 0.06), transparent 32%),
+        linear-gradient(180deg, rgba(255, 250, 242, 0.96), rgba(248, 242, 233, 0.94));
+    }
+
+    .legend-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0 0 12px;
+      padding: 0 4px;
+      font-size: 13px;
+      color: #4f463d;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.48);
+      border: 1px solid rgba(91, 69, 46, 0.08);
+    }
+
+    .legend-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    #chart {
+      width: 100%;
+      height: 790px;
+    }
+
+    .source {
+      margin-top: 12px;
+      font-size: 15px;
+      color: var(--muted);
+      padding: 0 6px 2px;
+    }
+
+    .source a {
+      color: var(--link);
+    }
+
+    @media (max-width: 760px) {
+      .wrap {
+        padding: 16px 12px 10px;
+      }
+
+      .hero {
+        padding: 12px 10px 10px;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .chart-title {
+        font-size: 34px;
+      }
+
+      .chart-subtitle {
+        font-size: 16px;
+      }
+
+      .chart-note,
+      .legend-row,
+      .source {
+        font-size: 14px;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .chart-shell {
+        padding: 10px;
+      }
+
+      #chart {
+        height: 900px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="viz-root" class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Household structure</div>
+      <div class="hero-grid">
+        <div>
+          <h1 class="chart-title">Population versus household count across countries</h1>
+          <p class="chart-subtitle">
+            Population is plotted against total households, with color encoding average people per household.
+          </p>
+          <p class="chart-note">
+            China and India are the clearest contrast: both are population giants, but China has far more households because its average household size is much smaller. Color encodes average people per household. Household distributions come from each country’s most recent available survey year, which varies by country.
+          </p>
+        </div>
+        <div class="hero-side">
+          <div class="summary-grid" aria-label="Household structure summary">
+            <div class="summary-card">
+              <div class="summary-label">Biggest gap</div>
+              <div class="summary-value" style="color:var(--cool);">China vs India</div>
+              <div class="summary-detail">Similar population scale, but a much wider household count gap.</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">Small-home pattern</div>
+              <div class="summary-value">Higher up</div>
+              <div class="summary-detail">Countries with smaller households rise vertically for the same population.</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">Low avg HH size</div>
+              <div class="summary-value" style="color:var(--cool);">~2 to 2.5</div>
+              <div class="summary-detail">Germany, Japan, South Korea, and the U.S. sit in the smaller-household cluster.</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">Large avg HH size</div>
+              <div class="summary-value" style="color:var(--warm);">5+</div>
+              <div class="summary-detail">Pakistan and DR Congo show how large households compress home counts.</div>
+            </div>
+          </div>
+          <div class="insight-card">
+            <h2 class="insight-title">How to read it</h2>
+            <p class="insight-body">
+              Think of population as width and households as height. Countries that sit unusually high for their width have smaller households; countries that sit lower bundle more people into each home.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="chart-shell">
+      <div class="legend-row" aria-label="Average household size legend">
+        <span class="legend-item"><span class="legend-dot" style="background:#4E79A7"></span>Smaller households</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#7DBB73"></span>Mid-size households</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#F28E2B"></span>Larger households</span>
+      </div>
+      <div id="chart"></div>
+    </div>
+    <div class="source">
+      Source:
+      <a href="https://en.wikipedia.org/wiki/List_of_countries_by_number_of_households" target="_blank" rel="noreferrer">Countries by number of households</a>
+      | 151 countries with complete household-size information; household inputs are drawn from different country-year snapshots
+    </div>
+  </div>
+
+  <script>
+    function reportHeight() {
+      const root = document.getElementById("viz-root");
+      if (window.parent && window.parent !== window && root) {
+        window.parent.postMessage({ type: "viz-height", height: root.getBoundingClientRect().height + 8 }, "*");
+      }
+    }
+
+    const rows = [
+      {"country":"India","population":1425775850.0,"avg_hh":4.57,"households":294292700.0,"p1":4.11,"p23":27.31,"p45":41.64,"p6":26.94,"year":2015},
+      {"country":"China","population":1409778724.0,"avg_hh":2.8,"households":482427212.0,"p1":17.84,"p23":44.5,"p45":28.06,"p6":9.6,"year":2023},
+      {"country":"United States","population":330662999.0,"avg_hh":2.49,"households":125736353.0,"p1":27.89,"p23":49.49,"p45":18.81,"p6":3.81,"year":2020},
+      {"country":"Indonesia","population":269603400.0,"avg_hh":3.86,"households":69855344.0,"p1":7.1,"p23":36.62,"p45":41.5,"p6":14.78,"year":2017},
+      {"country":"Pakistan","population":220892331.0,"avg_hh":6.8,"households":32462785.0,"p1":1.08,"p23":12.88,"p45":25.16,"p6":60.88,"year":2013},
+      {"country":"Brazil","population":212347290.0,"avg_hh":3.31,"households":64124398.0,"p1":12.0,"p23":47.27,"p45":31.91,"p6":8.82,"year":2010},
+      {"country":"Nigeria","population":206139587.0,"avg_hh":4.9,"households":42057041.0,"p1":11.51,"p23":25.53,"p45":27.86,"p6":35.1,"year":2015},
+      {"country":"Bangladesh","population":169660274.0,"avg_hh":4.47,"households":37957746.0,"p1":1.74,"p23":29.71,"p45":45.59,"p6":22.96,"year":2014},
+      {"country":"Russia","population":146748590.0,"avg_hh":2.58,"households":56771478.0,"p1":25.97,"p23":50.83,"p45":19.55,"p6":3.65,"year":2010},
+      {"country":"Mexico","population":127792286.0,"avg_hh":3.74,"households":34167462.0,"p1":10.08,"p23":37.68,"p45":37.75,"p6":14.49,"year":2015},
+      {"country":"Japan","population":125800000.0,"avg_hh":2.26,"households":54310000.0,"p1":37.97,"p23":44.67,"p45":15.72,"p6":1.64,"year":2020},
+      {"country":"Philippines","population":109441605.0,"avg_hh":4.23,"households":25893157.0,"p1":9.18,"p23":30.05,"p45":36.82,"p6":23.95,"year":2017},
+      {"country":"DR Congo","population":101935800.0,"avg_hh":5.3,"households":19225670.0,"p1":7.25,"p23":21.19,"p45":27.81,"p6":43.74,"year":2013},
+      {"country":"Egypt","population":101189802.0,"avg_hh":4.13,"households":24496076.0,"p1":6.48,"p23":30.4,"p45":43.12,"p6":20.0,"year":2014},
+      {"country":"Ethiopia","population":100829000.0,"avg_hh":4.61,"households":21850103.0,"p1":7.52,"p23":27.01,"p45":32.0,"p6":33.47,"year":2016},
+      {"country":"Vietnam","population":96483981.0,"avg_hh":3.78,"households":25503951.0,"p1":7.28,"p23":36.25,"p45":43.44,"p6":13.02,"year":2009},
+      {"country":"Turkey","population":84140990.0,"avg_hh":3.14,"households":26309332.0,"p1":19.74,"p23":42.49,"p45":28.6,"p6":9.17,"year":2023},
+      {"country":"Iran","population":83955821.0,"avg_hh":3.49,"households":24056109.0,"p1":8.48,"p23":49.13,"p45":37.86,"p6":4.53,"year":2016},
+      {"country":"Germany","population":83122889.0,"avg_hh":2.05,"households":40624971.0,"p1":39.53,"p23":47.0,"p45":12.71,"p6":0.76,"year":2011},
+      {"country":"France","population":67146000.0,"avg_hh":2.22,"households":30243926.0,"p1":35.46,"p23":46.84,"p45":16.08,"p6":1.62,"year":2015},
+      {"country":"United Kingdom","population":66796807.0,"avg_hh":2.27,"households":29486179.0,"p1":33.01,"p23":46.41,"p45":18.54,"p6":2.04,"year":2011},
+      {"country":"Italy","population":59554023.0,"avg_hh":2.4,"households":24814195.0,"p1":31.1,"p23":43.26,"p45":23.68,"p6":1.96,"year":2011},
+      {"country":"South Africa","population":59308690.0,"avg_hh":3.36,"households":17668822.0,"p1":23.84,"p23":38.77,"p45":26.15,"p6":11.24,"year":2011},
+      {"country":"Tanzania","population":55155000.0,"avg_hh":4.85,"households":11362988.0,"p1":4.43,"p23":25.0,"p45":35.97,"p6":34.6,"year":2016},
+      {"country":"Myanmar","population":51419420.0,"avg_hh":4.22,"households":12186518.0,"p1":12.0,"p23":27.0,"p45":38.99,"p6":22.01,"year":2014},
+      {"country":"South Korea","population":51583722.0,"avg_hh":2.18,"households":23650555.0,"p1":40.81,"p23":40.98,"p45":17.36,"p6":0.85,"year":2022}
+    ];
+
+    const labelCountries = new Set([
+      "China",
+      "India",
+      "United States",
+      "Japan",
+      "Germany",
+      "Pakistan",
+      "Nigeria",
+      "Indonesia",
+      "South Korea"
+    ]);
+
+    const labelPositions = {
+      "China": { ax: 70, ay: -32 },
+      "India": { ax: -80, ay: 36 },
+      "United States": { ax: 68, ay: -18 },
+      "Japan": { ax: 66, ay: -8 },
+      "Germany": { ax: 66, ay: -24 },
+      "Pakistan": { ax: 76, ay: -12 },
+      "Nigeria": { ax: 70, ay: -6 },
+      "Indonesia": { ax: 70, ay: -18 },
+      "South Korea": { ax: 72, ay: 6 }
+    };
+
+    const trace = {
+      type: "scatter",
+      mode: "markers",
+      x: rows.map((d) => d.population),
+      y: rows.map((d) => d.households),
+      hovertext: rows.map((d) => d.country),
+      customdata: rows.map((d) => [d.avg_hh, d.p1, d.p23, d.p45, d.p6, d.year]),
+      marker: {
+        size: rows.map((d) => 10 + d.avg_hh * 2.2),
+        color: rows.map((d) => d.avg_hh),
+        colorscale: [
+          [0, "#4E79A7"],
+          [0.5, "#7DBB73"],
+          [1, "#F28E2B"]
+        ],
+        cmin: 2,
+        cmax: 7,
+        colorbar: {
+          title: { text: "Avg people<br>per household" },
+          thickness: 14,
+          len: 0.72,
+          y: 0.52,
+          outlinewidth: 0,
+          tickcolor: "#7a7068",
+          tickfont: { color: "#60574f" }
+        },
+        line: { color: "#fffaf2", width: 1.6 },
+        opacity: 0.88
+      },
+      hovertemplate:
+        "<b>%{hovertext}</b><br>" +
+        "Population: %{x:,.0f}<br>" +
+        "Households: %{y:,.0f}<br>" +
+        "Avg household size: %{customdata[0]:.2f}<br>" +
+        "1 member: %{customdata[1]:.1f}%<br>" +
+        "2-3 members: %{customdata[2]:.1f}%<br>" +
+        "4-5 members: %{customdata[3]:.1f}%<br>" +
+        "6+ members: %{customdata[4]:.1f}%<br>" +
+        "Year: %{customdata[5]}<extra></extra>"
+    };
+
+    const annotations = [
+      {
+        x: 1.42e9,
+        y: 4.82e8,
+        xref: "x",
+        yref: "y",
+        text: "China sits much higher than India<br>despite nearly the same population.",
+        showarrow: true,
+        arrowcolor: "#4E79A7",
+        ax: -135,
+        ay: -40,
+        bgcolor: "rgba(255,250,242,0.96)",
+        bordercolor: "rgba(78,121,167,0.22)",
+        borderwidth: 1,
+        font: { size: 13, color: "#244B6D" },
+        align: "left"
+      },
+      {
+        x: 8.31e7,
+        y: 4.06e7,
+        xref: "x",
+        yref: "y",
+        text: "Smaller-household countries float higher<br>for the same population width.",
+        showarrow: true,
+        arrowcolor: "#4E79A7",
+        ax: 120,
+        ay: -58,
+        bgcolor: "rgba(255,250,242,0.96)",
+        bordercolor: "rgba(78,121,167,0.22)",
+        borderwidth: 1,
+        font: { size: 13, color: "#244B6D" },
+        align: "left"
+      },
+      ...rows
+        .filter((d) => labelCountries.has(d.country))
+        .map((d) => ({
+          x: d.population,
+          y: d.households,
+          xref: "x",
+          yref: "y",
+          text: d.country,
+          showarrow: true,
+          arrowhead: 0,
+          arrowsize: 1,
+          arrowwidth: 1,
+          arrowcolor: "#A0A8B7",
+          ax: labelPositions[d.country].ax,
+          ay: labelPositions[d.country].ay,
+          bgcolor: "rgba(255,250,242,0.94)",
+          bordercolor: "rgba(160,168,183,0.28)",
+          borderwidth: 1,
+          borderpad: 3,
+          font: { size: 12, color: "#111111" },
+          align: "left"
+        }))
+    ];
+
+    const layout = {
+      paper_bgcolor: "rgba(0,0,0,0)",
+      plot_bgcolor: "rgba(0,0,0,0)",
+      font: {
+        family: "\"IBM Plex Sans\", \"Avenir Next\", \"Segoe UI\", sans-serif",
+        color: "#2b241f",
+        size: 16
+      },
+      margin: { l: 90, r: 90, t: 24, b: 88 },
+      xaxis: {
+        type: "log",
+        title: { text: "Current population (log scale)", standoff: 18, font: { color: "#5d544d" } },
+        showgrid: true,
+        gridcolor: "#e4ddd4",
+        zeroline: false,
+        automargin: true,
+        tickfont: { color: "#5d544d" }
+      },
+      yaxis: {
+        type: "log",
+        title: { text: "Number of households (log scale)", standoff: 18, font: { color: "#5d544d" } },
+        showgrid: true,
+        gridcolor: "#e4ddd4",
+        zeroline: false,
+        automargin: true,
+        tickfont: { color: "#5d544d" }
+      },
+      annotations
+    };
+
+    Plotly.newPlot("chart", [trace], layout, {
+      responsive: true,
+      displayModeBar: false
+    }).then(() => {
+      reportHeight();
+      if ("ResizeObserver" in window) {
+        new ResizeObserver(reportHeight).observe(document.getElementById("viz-root"));
+      } else {
+        window.addEventListener("resize", reportHeight);
+      }
+      setTimeout(reportHeight, 300);
+      setTimeout(reportHeight, 1000);
+    });
+  </script>
+</body>
+</html>
