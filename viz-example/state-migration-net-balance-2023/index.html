@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Net Interstate Migration Balance by State</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    :root {
+      --bg: #f4eee4;
+      --panel: rgba(255, 251, 245, 0.93);
+      --ink: #1e292b;
+      --muted: #5f6c6f;
+      --gain: #2f7d65;
+      --loss: #bc5a35;
+      --grid: rgba(30, 41, 43, 0.12);
+      --rule: rgba(30, 41, 43, 0.08);
+      --accent: #b84a1e;
+      --shadow: 0 22px 54px rgba(63, 58, 50, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      background:
+        radial-gradient(circle at top right, rgba(184, 74, 30, 0.10), transparent 24%),
+        radial-gradient(circle at 14% 18%, rgba(47, 125, 101, 0.10), transparent 22%),
+        linear-gradient(180deg, #f8f3eb 0%, var(--bg) 100%);
+    }
+
+    .frame {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 28px 18px 20px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--rule);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 28px 28px 14px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      font: 700 0.78rem/1.2 Arial, Helvetica, sans-serif;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.03;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      max-width: 15ch;
+    }
+
+    .subtitle {
+      margin: 14px 0 0;
+      max-width: 68ch;
+      font: 400 1rem/1.58 Arial, Helvetica, sans-serif;
+      color: var(--muted);
+    }
+
+    .chart-wrap {
+      padding: 12px 12px 0;
+    }
+
+    #chart {
+      width: 100%;
+      height: 760px;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      padding: 8px 24px 10px;
+    }
+
+    .summary-card {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.58);
+      border: 1px solid rgba(30, 41, 43, 0.08);
+      min-height: 88px;
+    }
+
+    .summary-label {
+      margin: 0 0 6px;
+      font: 700 0.72rem/1.2 Arial, Helvetica, sans-serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .summary-value {
+      margin: 0;
+      font: 600 1.24rem/1.15 Georgia, "Times New Roman", serif;
+      color: var(--ink);
+    }
+
+    .summary-note {
+      margin: 6px 0 0;
+      font: 400 0.92rem/1.46 Arial, Helvetica, sans-serif;
+      color: var(--muted);
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 24px 24px;
+      border-top: 1px solid var(--rule);
+      font: 400 0.88rem/1.5 Arial, Helvetica, sans-serif;
+      color: var(--muted);
+    }
+
+    .footer a { color: var(--ink); }
+
+    @media (max-width: 760px) {
+      .frame { padding: 16px 10px 16px; }
+      .panel { border-radius: 18px; }
+      .header { padding: 22px 18px 12px; }
+      .chart-wrap { padding: 6px 2px 0; }
+      #chart { height: 860px; }
+      .summary { grid-template-columns: 1fr; padding: 8px 18px 8px; }
+      .footer { flex-direction: column; padding: 14px 18px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main id="viz-root" class="frame">
+    <section class="panel">
+      <header class="header">
+        <p class="eyebrow">2023 ACS State Migration</p>
+        <h1>Net migration balance among the biggest 2023 gain and loss states</h1>
+        <p class="subtitle">
+          Top eight net gains and top eight net losses among the 50 states. Net migration is shown as in-movers minus out-movers using the Census state-to-state migration summary.
+        </p>
+      </header>
+      <div class="chart-wrap">
+        <div id="chart" aria-label="Horizontal diverging bar chart of 2023 net interstate migration balance by state"></div>
+      </div>
+      <section class="summary" aria-label="Key context">
+        <article class="summary-card">
+          <p class="summary-label">Largest gain</p>
+          <p class="summary-value">Texas +133k</p>
+          <p class="summary-note">Texas posted the largest net interstate gain, narrowly ahead of Florida.</p>
+        </article>
+        <article class="summary-card">
+          <p class="summary-label">Largest loss</p>
+          <p class="summary-value">California -268k</p>
+          <p class="summary-note">California’s net loss was larger than New York’s by roughly 89,000 people.</p>
+        </article>
+        <article class="summary-card">
+          <p class="summary-label">Read this as</p>
+          <p class="summary-value">Outliers, not every state</p>
+          <p class="summary-note">The chart shows the eight largest gains and eight largest losses so the middle of the distribution does not crowd the story.</p>
+        </article>
+      </section>
+      <footer class="footer">
+        <div>
+          Source: <a href="https://www.census.gov/data/tables/time-series/demo/geographic-mobility/state-to-state-migration.html" target="_blank" rel="noreferrer">U.S. Census Bureau, State-to-State Migration Flows: 2023 American Community Survey 1-Year Estimates</a>.
+          Values shown from the provided workbook.
+        </div>
+        <div>Chart logic: net migration equals in-movers minus out-movers; District of Columbia and Puerto Rico are excluded so the view reads as a 50-state comparison.</div>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    const rows = [
+      { state: "Texas", net: 133372, inMovers: 611942, outMovers: 478570, side: "gain" },
+      { state: "Florida", net: 126008, inMovers: 636933, outMovers: 510925, side: "gain" },
+      { state: "North Carolina", net: 106592, inMovers: 339255, outMovers: 232663, side: "gain" },
+      { state: "South Carolina", net: 68667, inMovers: 203674, outMovers: 135007, side: "gain" },
+      { state: "Arizona", net: 62533, inMovers: 256203, outMovers: 193670, side: "gain" },
+      { state: "Georgia", net: 59968, inMovers: 310452, outMovers: 250484, side: "gain" },
+      { state: "Indiana", net: 29773, inMovers: 150649, outMovers: 120876, side: "gain" },
+      { state: "Oklahoma", net: 23370, inMovers: 107679, outMovers: 84309, side: "gain" },
+      { state: "Louisiana", net: -31716, inMovers: 69464, outMovers: 101180, side: "loss" },
+      { state: "Pennsylvania", net: -34935, inMovers: 237526, outMovers: 272461, side: "loss" },
+      { state: "Maryland", net: -36090, inMovers: 162674, outMovers: 198764, side: "loss" },
+      { state: "Massachusetts", net: -39513, inMovers: 145021, outMovers: 184534, side: "loss" },
+      { state: "New Jersey", net: -69179, inMovers: 156335, outMovers: 225514, side: "loss" },
+      { state: "Illinois", net: -93247, inMovers: 203758, outMovers: 297005, side: "loss" },
+      { state: "New York", net: -178709, inMovers: 302835, outMovers: 481544, side: "loss" },
+      { state: "California", net: -268052, inMovers: 422075, outMovers: 690127, side: "loss" }
+    ];
+
+    const fmtShort = (value) => {
+      const sign = value > 0 ? "+" : value < 0 ? "-" : "";
+      return `${sign}${Math.round(Math.abs(value) / 1000)}k`;
+    };
+
+    const gainRows = rows.filter((d) => d.side === "gain");
+    const lossRows = rows.filter((d) => d.side === "loss");
+    const states = rows.map((d) => d.state);
+
+    const gainTrace = {
+      type: "bar",
+      orientation: "h",
+      name: "Net gain",
+      y: gainRows.map((d) => d.state),
+      x: gainRows.map((d) => d.net),
+      text: gainRows.map((d) => fmtShort(d.net)),
+      textposition: "outside",
+      cliponaxis: false,
+      marker: { color: "#2f7d65" },
+      hovertemplate:
+        "<b>%{y}</b><br>Net migration: %{x:,}<br>In-movers: %{customdata[0]:,}<br>Out-movers: %{customdata[1]:,}<extra></extra>",
+      customdata: gainRows.map((d) => [d.inMovers, d.outMovers])
+    };
+
+    const lossTrace = {
+      type: "bar",
+      orientation: "h",
+      name: "Net loss",
+      y: lossRows.map((d) => d.state),
+      x: lossRows.map((d) => d.net),
+      text: lossRows.map((d) => fmtShort(d.net)),
+      textposition: "outside",
+      cliponaxis: false,
+      marker: { color: "#bc5a35" },
+      hovertemplate:
+        "<b>%{y}</b><br>Net migration: %{x:,}<br>In-movers: %{customdata[0]:,}<br>Out-movers: %{customdata[1]:,}<extra></extra>",
+      customdata: lossRows.map((d) => [d.inMovers, d.outMovers])
+    };
+
+    const layout = {
+      paper_bgcolor: "rgba(0,0,0,0)",
+      plot_bgcolor: "rgba(0,0,0,0)",
+      barmode: "overlay",
+      margin: { l: 154, r: 84, t: 28, b: 54 },
+      showlegend: false,
+      bargap: 0.28,
+      xaxis: {
+        range: [-310000, 165000],
+        tickvals: [-300000, -200000, -100000, 0, 100000],
+        ticktext: ["300k loss", "200k loss", "100k loss", "0", "100k gain"],
+        gridcolor: "rgba(30, 41, 43, 0.12)",
+        gridwidth: 1,
+        zeroline: true,
+        zerolinecolor: "rgba(30, 41, 43, 0.45)",
+        zerolinewidth: 1.4,
+        tickfont: { family: "Arial, Helvetica, sans-serif", size: 13, color: "#5f6c6f" },
+        title: {
+          text: "Net interstate migration in 2023",
+          font: { family: "Arial, Helvetica, sans-serif", size: 14, color: "#5f6c6f" },
+          standoff: 12
+        }
+      },
+      yaxis: {
+        autorange: "reversed",
+        categoryorder: "array",
+        categoryarray: states,
+        tickfont: { family: "Arial, Helvetica, sans-serif", size: 14, color: "#1e292b" }
+      },
+      annotations: [
+        {
+          x: 117000,
+          y: -0.9,
+          xref: "x",
+          yref: "paper",
+          text: "<b>Net gain states</b>",
+          showarrow: false,
+          font: { family: "Arial, Helvetica, sans-serif", size: 13, color: "#2f7d65" }
+        },
+        {
+          x: -220000,
+          y: -0.9,
+          xref: "x",
+          yref: "paper",
+          text: "<b>Net loss states</b>",
+          showarrow: false,
+          font: { family: "Arial, Helvetica, sans-serif", size: 13, color: "#bc5a35" }
+        }
+      ]
+    };
+
+    const config = {
+      responsive: true,
+      displayModeBar: false
+    };
+
+    Plotly.newPlot("chart", [gainTrace, lossTrace], layout, config).then(() => {
+      const root = document.getElementById("viz-root");
+      const reportHeight = () => {
+        window.parent.postMessage({ type: "viz-height", height: root.getBoundingClientRect().height + 8 }, "*");
+      };
+      reportHeight();
+      if ("ResizeObserver" in window) {
+        new ResizeObserver(reportHeight).observe(root);
+      } else {
+        window.addEventListener("resize", reportHeight);
+      }
+    });
+  </script>
+</body>
+</html>

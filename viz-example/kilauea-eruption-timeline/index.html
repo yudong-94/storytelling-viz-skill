@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kilauea's Longest Eruption Episodes Came Early</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    :root {
+      --bg: #120b09;
+      --bg-deep: #090403;
+      --panel: rgba(27, 16, 13, 0.82);
+      --panel-soft: rgba(39, 22, 17, 0.76);
+      --text: #f4e7dd;
+      --muted: #c0a79a;
+      --grid: rgba(233, 190, 160, 0.14);
+      --short: #8d6c60;
+      --long: #ff6b3d;
+      --ember: #ffb36b;
+      --ash: #6d5047;
+      --border: rgba(255, 180, 120, 0.12);
+      --link: #ffbe8c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 14% 14%, rgba(255, 107, 61, 0.18), transparent 22%),
+        radial-gradient(circle at 80% 20%, rgba(255, 179, 107, 0.12), transparent 18%),
+        radial-gradient(circle at 48% 85%, rgba(170, 86, 49, 0.16), transparent 26%),
+        linear-gradient(180deg, #1a0e0b 0%, var(--bg) 48%, var(--bg-deep) 100%);
+      color: var(--text);
+      font-family: "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
+    }
+
+    .wrap {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 28px 18px 16px;
+    }
+
+    .hero {
+      margin-bottom: 16px;
+      padding: 16px 16px 12px;
+      border-radius: 28px;
+      background:
+        linear-gradient(135deg, rgba(31, 19, 15, 0.94), rgba(19, 11, 9, 0.86)),
+        radial-gradient(circle at 22% 28%, rgba(255, 107, 61, 0.12), transparent 30%);
+      border: 1px solid var(--border);
+      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.26);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 244, 236, 0.05);
+      border: 1px solid rgba(255, 244, 236, 0.08);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--long);
+      box-shadow: 0 0 16px rgba(255, 107, 61, 0.7);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .chart-title {
+      margin: 0 0 10px;
+      font-family: "Canela", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+      font-size: 38px;
+      line-height: 1.01;
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      max-width: none;
+    }
+
+    .chart-subtitle,
+    .chart-note,
+    .source {
+      max-width: 74ch;
+    }
+
+    .chart-subtitle {
+      margin: 0 0 10px;
+      font-size: 18px;
+      line-height: 1.45;
+      color: #f3ddd0;
+    }
+
+    .chart-note {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .hero-side {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .summary-card,
+    .insight-card,
+    .chart-shell {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+    }
+
+    .summary-card {
+      border-radius: 18px;
+      padding: 14px 14px 12px;
+    }
+
+    .summary-label {
+      margin-bottom: 6px;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .summary-value {
+      font-family: "Canela", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+      font-size: 29px;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: #fff4ec;
+    }
+
+    .summary-detail {
+      margin-top: 5px;
+      font-size: 13px;
+      line-height: 1.38;
+      color: var(--muted);
+    }
+
+    .insight-card {
+      border-radius: 18px;
+      padding: 14px 14px 12px;
+      background:
+        linear-gradient(180deg, rgba(37, 21, 16, 0.92), rgba(22, 13, 10, 0.88));
+    }
+
+    .insight-title {
+      margin: 0 0 8px;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .insight-body {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.45;
+      color: #f0d9cb;
+    }
+
+    .chart-shell {
+      border-radius: 28px;
+      padding: 14px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255, 107, 61, 0.09), transparent 30%),
+        linear-gradient(180deg, rgba(27, 16, 13, 0.96), rgba(14, 8, 7, 0.96));
+      overflow: hidden;
+    }
+
+    .legend-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 0 4px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(255, 244, 236, 0.05);
+      border: 1px solid rgba(255, 244, 236, 0.06);
+    }
+
+    .legend-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    #chart {
+      width: 100%;
+      height: 900px;
+      border-radius: 18px;
+    }
+
+    .source {
+      margin-top: 12px;
+      font-size: 14px;
+      line-height: 1.4;
+      color: var(--muted);
+      padding: 0 6px 2px;
+    }
+
+    .source a {
+      color: var(--link);
+    }
+
+    @media (max-width: 760px) {
+      .wrap {
+        padding: 16px 12px 10px;
+      }
+
+      .hero {
+        padding: 12px 10px 10px;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .chart-title {
+        font-size: 34px;
+      }
+
+      .chart-subtitle {
+        font-size: 16px;
+      }
+
+      .chart-note,
+      .legend-row,
+      .source {
+        font-size: 14px;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .chart-shell {
+        padding: 10px;
+      }
+
+      #chart {
+        height: 1040px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="viz-root" class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Eruption cadence</div>
+      <div class="hero-grid">
+        <div>
+          <h1 class="chart-title">Episode timing and duration in Kilauea’s recent eruption sequence</h1>
+          <p class="chart-subtitle">
+            Discrete eruption episodes from late December 2024 onward, shown by start timing and duration in hours.
+          </p>
+          <p class="chart-note">
+            The left panel shows when each episode began; the right panel shows how long it lasted in hours. Episodes lasting 24 hours or more are highlighted. This is an episode timeline, not a measure of lava volume, ash output, or eruption intensity.
+          </p>
+        </div>
+        <div class="hero-side">
+          <div class="summary-grid" aria-label="Kilauea episode summary">
+            <div class="summary-card">
+              <div class="summary-label">Episodes</div>
+              <div class="summary-value">36</div>
+              <div class="summary-detail">Distinct eruption bursts in the provided file.</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">Median duration</div>
+              <div class="summary-value">12.7h</div>
+              <div class="summary-detail">Half of all episodes ended within roughly half a day.</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">24h+ episodes</div>
+              <div class="summary-value" style="color:var(--long);">8</div>
+              <div class="summary-detail">The long-burn events are the minority.</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">Longest burst</div>
+              <div class="summary-value">204.5h</div>
+              <div class="summary-detail">Episode 3 ran for more than eight days.</div>
+            </div>
+          </div>
+          <div class="insight-card">
+            <h2 class="insight-title">Reading the pattern</h2>
+            <p class="insight-body">
+              This timeline is less about a steady volcano than about changing rhythm. The chart works best when read as a shift from long early burns into recurring short pulses.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="chart-shell">
+      <div class="legend-row" aria-label="Episode duration legend">
+        <span class="legend-item"><span class="legend-swatch" style="background:#8d6c60"></span>Under 24 hours</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:#ff6b3d"></span>24 hours or more</span>
+      </div>
+      <div id="chart"></div>
+    </div>
+    <div class="source">
+      Source:
+      <a href="https://www.usgs.gov/volcanoes/kilauea/volcano-updates" target="_blank" rel="noreferrer">USGS, Kilauea volcano updates</a>.
+      Episode timing was compiled from the USGS update stream for December 2024 onward.
+    </div>
+  </div>
+
+  <script>
+    function reportHeight() {
+      const root = document.getElementById("viz-root");
+      if (window.parent && window.parent !== window && root) {
+        window.parent.postMessage({ type: "viz-height", height: root.getBoundingClientRect().height + 8 }, "*");
+      }
+    }
+
+    const rows = [
+      { episode: 1, start: "2024-12-23T02:20", end: "2024-12-23T16:00", hours: 13.67 },
+      { episode: 2, start: "2024-12-24T08:00", end: "2024-12-25T11:00", hours: 27.0 },
+      { episode: 3, start: "2024-12-26T08:00", end: "2025-01-03T20:30", hours: 204.5 },
+      { episode: 4, start: "2025-01-15T09:00", end: "2025-01-18T10:10", hours: 73.17 },
+      { episode: 5, start: "2025-01-22T14:30", end: "2025-01-23T04:30", hours: 14.0 },
+      { episode: 6, start: "2025-01-24T23:28", end: "2025-01-25T12:36", hours: 13.13 },
+      { episode: 7, start: "2025-01-27T18:41", end: "2025-01-28T10:41", hours: 16.0 },
+      { episode: 8, start: "2025-02-03T21:52", end: "2025-02-04T19:23", hours: 21.52 },
+      { episode: 9, start: "2025-02-11T10:16", end: "2025-02-12T08:43", hours: 22.45 },
+      { episode: 10, start: "2025-02-19T20:22", end: "2025-02-20T09:18", hours: 12.93 },
+      { episode: 11, start: "2025-02-25T18:26", end: "2025-02-26T07:06", hours: 12.67 },
+      { episode: 12, start: "2025-03-04T07:30", end: "2025-03-05T10:37", hours: 27.12 },
+      { episode: 13, start: "2025-03-11T02:36", end: "2025-03-11T15:13", hours: 12.62 },
+      { episode: 14, start: "2025-03-19T09:26", end: "2025-03-20T13:49", hours: 28.38 },
+      { episode: 15, start: "2025-03-25T12:04", end: "2025-03-26T19:10", hours: 31.1 },
+      { episode: 16, start: "2025-03-31T22:57", end: "2025-04-02T12:04", hours: 37.12 },
+      { episode: 17, start: "2025-04-07T22:15", end: "2025-04-09T09:45", hours: 35.5 },
+      { episode: 18, start: "2025-04-22T03:30", end: "2025-04-22T13:28", hours: 9.97 },
+      { episode: 19, start: "2025-05-01T21:28", end: "2025-05-02T05:20", hours: 7.87 },
+      { episode: 20, start: "2025-05-06T17:28", end: "2025-05-06T21:28", hours: 4.0 },
+      { episode: 21, start: "2025-05-11T12:45", end: "2025-05-11T20:36", hours: 7.85 },
+      { episode: 22, start: "2025-05-16T05:13", end: "2025-05-16T15:29", hours: 10.27 },
+      { episode: 23, start: "2025-05-25T16:15", end: "2025-05-25T22:25", hours: 6.17 },
+      { episode: 24, start: "2025-06-04T20:55", end: "2025-06-05T04:28", hours: 7.55 },
+      { episode: 25, start: "2025-06-11T11:57", end: "2025-06-11T20:08", hours: 8.18 },
+      { episode: 26, start: "2025-06-20T01:40", end: "2025-06-20T10:25", hours: 8.75 },
+      { episode: 27, start: "2025-06-29T09:05", end: "2025-06-29T19:54", hours: 10.82 },
+      { episode: 28, start: "2025-07-09T04:10", end: "2025-07-09T13:20", hours: 9.17 },
+      { episode: 29, start: "2025-07-20T05:15", end: "2025-07-20T18:35", hours: 13.33 },
+      { episode: 30, start: "2025-08-06T01:20", end: "2025-08-06T12:55", hours: 11.58 },
+      { episode: 31, start: "2025-08-22T14:04", end: "2025-08-23T02:52", hours: 12.8 },
+      { episode: 32, start: "2025-09-02T06:35", end: "2025-09-02T20:01", hours: 13.43 },
+      { episode: 33, start: "2025-09-19T03:11", end: "2025-09-19T12:08", hours: 8.95 },
+      { episode: 34, start: "2025-10-01T00:53", end: "2025-10-01T07:03", hours: 6.17 },
+      { episode: 35, start: "2025-10-17T20:05", end: "2025-10-18T03:32", hours: 7.45 },
+      { episode: 36, start: "2025-11-09T11:15", end: "2025-11-09T16:16", hours: 5.02 }
+    ];
+
+    const labels = rows.map((d) => `Episode ${d.episode}`);
+    const colors = rows.map((d) => d.hours >= 24 ? "#c65a3a" : "#cfc5b9");
+
+    const startTrace = {
+      type: "scatter",
+      mode: "markers",
+      x: rows.map((d) => d.start),
+      y: labels,
+      marker: {
+        color: colors,
+        size: rows.map((d) => d.hours >= 24 ? 13 : 8),
+        symbol: rows.map((d) => d.hours >= 24 ? "diamond" : "circle"),
+        line: { color: "#2a1713", width: 1.2 }
+      },
+      customdata: rows.map((d) => [d.start, d.end, d.hours]),
+      hovertemplate:
+        "<b>%{y}</b><br>" +
+        "Start: %{customdata[0]|%b %-d, %Y %H:%M}<br>" +
+        "Pause: %{customdata[1]|%b %-d, %Y %H:%M}<br>" +
+        "Duration: %{customdata[2]:.2f} hours<extra></extra>",
+      xaxis: "x",
+      yaxis: "y",
+      showlegend: false
+    };
+
+    const durationTrace = {
+      type: "bar",
+      orientation: "h",
+      x: rows.map((d) => d.hours),
+      y: labels,
+      marker: {
+        color: colors,
+        line: { color: "#261612", width: 1 }
+      },
+      customdata: rows.map((d) => [d.start, d.end, d.hours]),
+      hovertemplate:
+        "<b>%{y}</b><br>" +
+        "Start: %{customdata[0]|%b %-d, %Y %H:%M}<br>" +
+        "Pause: %{customdata[1]|%b %-d, %Y %H:%M}<br>" +
+        "Duration: %{x:.2f} hours<extra></extra>",
+      xaxis: "x2",
+      yaxis: "y",
+      showlegend: false
+    };
+
+    const longestLabels = rows.filter((d) => d.hours >= 24);
+    const durationLabelTrace = {
+      type: "scatter",
+      mode: "text",
+      x: longestLabels.map((d) => d.hours),
+      y: longestLabels.map((d) => `Episode ${d.episode}`),
+      text: longestLabels.map((d) => `${Math.round(d.hours)}h`),
+      textposition: "middle right",
+      textfont: {
+        size: 12,
+        color: "#ffd4bf"
+      },
+      hoverinfo: "skip",
+      cliponaxis: false,
+      xaxis: "x2",
+      yaxis: "y",
+      showlegend: false
+    };
+
+    function buildLayout() {
+      const mobile = window.innerWidth <= 760;
+      return {
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
+        font: {
+          family: "\"IBM Plex Sans\", \"Avenir Next\", \"Segoe UI\", sans-serif",
+          color: "#f0dfd4",
+          size: mobile ? 13 : 14
+        },
+        margin: {
+          l: mobile ? 94 : 120,
+          r: mobile ? 46 : 70,
+          t: 14,
+          b: 62
+        },
+        xaxis: {
+          type: "date",
+          domain: mobile ? [0, 0.6] : [0, 0.66],
+          tickformat: "%b '%y",
+          showgrid: true,
+          gridcolor: "rgba(233, 190, 160, 0.14)",
+          zeroline: false,
+          linecolor: "rgba(255, 214, 191, 0.2)",
+          tickfont: { color: "#d9bfb1" },
+          title: { text: "Episode ignition date", standoff: 14, font: { color: "#d9bfb1" } }
+        },
+        xaxis2: {
+          domain: mobile ? [0.68, 1] : [0.74, 1],
+          range: [0, 215],
+          showgrid: true,
+          gridcolor: "rgba(233, 190, 160, 0.12)",
+          zeroline: false,
+          linecolor: "rgba(255, 214, 191, 0.2)",
+          tickfont: { color: "#d9bfb1" },
+          title: { text: "Burn length (hours)", standoff: 14, font: { color: "#d9bfb1" } },
+          tickvals: [0, 12, 24, 48, 96, 192],
+          ticktext: ["0", "12", "24", "48", "96", "192"]
+        },
+        yaxis: {
+          automargin: true,
+          tickfont: { size: mobile ? 10 : 11, color: "#d8c0b3" },
+          showgrid: false,
+          autorange: "reversed"
+        },
+        bargap: 0.3,
+        annotations: [
+          {
+            xref: "paper",
+            yref: "paper",
+            x: mobile ? 0.3 : 0.33,
+            y: 1.04,
+            text: "<b>When episodes started</b>",
+            showarrow: false,
+            font: { size: mobile ? 11 : 12, color: "#d6b8a7" }
+          },
+          {
+            xref: "paper",
+            yref: "paper",
+            x: mobile ? 0.84 : 0.87,
+            y: 1.04,
+            text: "<b>How long they lasted</b>",
+            showarrow: false,
+            font: { size: mobile ? 11 : 12, color: "#d6b8a7" }
+          },
+          {
+            xref: "paper",
+            yref: "paper",
+            x: mobile ? 0.82 : 0.84,
+            y: 0.93,
+            text: "Episode 3 towers above the rest<br>as the main long-duration outlier.",
+            showarrow: true,
+            arrowcolor: "#ff6b3d",
+            ax: 72,
+            ay: -14,
+            bgcolor: "rgba(25,15,12,0.94)",
+            bordercolor: "rgba(255,107,61,0.24)",
+            borderwidth: 1,
+            font: { size: mobile ? 11 : 12, color: "#ffd8c6" },
+            align: "left"
+          },
+          {
+            xref: "paper",
+            yref: "paper",
+            x: mobile ? 0.28 : 0.24,
+            y: 0.43,
+            text: "Long episodes cluster in the<br>opening months of the series.",
+            showarrow: true,
+            arrowcolor: "#ffb36b",
+            ax: -62,
+            ay: 34,
+            bgcolor: "rgba(25,15,12,0.94)",
+            bordercolor: "rgba(255,179,107,0.22)",
+            borderwidth: 1,
+            font: { size: mobile ? 11 : 12, color: "#ffe0bf" },
+            align: "left"
+          },
+          {
+            xref: "paper",
+            yref: "paper",
+            x: 0,
+            y: -0.13,
+            xanchor: "left",
+            yanchor: "top",
+            showarrow: false,
+            align: "left",
+            font: { size: mobile ? 11 : 12, color: "#c8ad9f" },
+            text: "Chart summary: the eruption sequence begins with several long burns, then settles into a later rhythm of shorter, sharper episodes."
+          }
+        ]
+      };
+    }
+
+    function render() {
+      Plotly.newPlot("chart", [startTrace, durationTrace, durationLabelTrace], buildLayout(), {
+        responsive: true,
+        displayModeBar: false
+      }).then(reportHeight);
+    }
+
+    render();
+    window.addEventListener("resize", () => {
+      Plotly.react("chart", [startTrace, durationTrace, durationLabelTrace], buildLayout(), {
+        responsive: true,
+        displayModeBar: false
+      }).then(reportHeight);
+    });
+    if ("ResizeObserver" in window) {
+      new ResizeObserver(reportHeight).observe(document.getElementById("viz-root"));
+    }
+  </script>
+</body>
+</html>

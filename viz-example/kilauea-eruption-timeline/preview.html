@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preview | Kilauea’s longest recent eruption episodes came early</title>
+  <style>
+    :root {
+      --bg: #140b09;
+      --ink: #f4e7dd;
+      --muted: #c0a79a;
+      --panel: rgba(26, 15, 12, 0.9);
+      --rule: rgba(255, 198, 160, 0.12);
+      --accent: #ff6b3d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, rgba(255, 107, 61, 0.10), transparent 28%),
+        linear-gradient(180deg, #1a0e0b 0%, var(--bg) 100%);
+    }
+    .page { max-width: 1080px; margin: 0 auto; padding: 26px 16px 40px; }
+    .intro { margin: 0 0 22px; }
+    .kicker {
+      margin: 0 0 10px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    h1 {
+      margin: 0 0 12px;
+      font: 600 clamp(2.5rem, 5.4vw, 5rem)/0.95 Georgia, "Times New Roman", serif;
+      letter-spacing: -0.03em;
+      max-width: 15ch;
+    }
+    .deck {
+      margin: 0;
+      line-height: 1.62;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 1.8vw, 1.18rem);
+    }
+    .artifact {
+      background: var(--panel);
+      border: 1px solid var(--rule);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 22px 50px rgba(0, 0, 0, 0.24);
+    }
+    iframe { display: block; width: 100%; height: 1040px; border: 0; background: transparent; }
+    .notes {
+      display: grid;
+      gap: 10px;
+      padding: 18px 20px 22px;
+      border-top: 1px solid var(--rule);
+      background: rgba(28, 16, 13, 0.72);
+    }
+    .notes p { margin: 0; line-height: 1.55; color: var(--muted); }
+    .notes strong { color: var(--ink); }
+    .notes a { color: var(--ink); }
+    @media (max-width: 760px) {
+      .page { padding: 18px 10px 24px; }
+      h1 { max-width: 10ch; }
+      .artifact { border-radius: 18px; }
+      iframe { height: 980px; }
+      .notes { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="intro">
+      <p class="kicker">Kilauea Eruption Cadence</p>
+      <h1>The longest recent Kilauea episodes arrived at the start of the sequence</h1>
+      <p class="deck">
+        The pattern is less a steady burn than a shift in rhythm. Early bursts lasted far longer, while later 2025 episodes became shorter and more frequent, turning the timeline into a story about changing cadence rather than constant intensity.
+      </p>
+    </section>
+    <section class="artifact">
+      <iframe id="viz-frame" src="./index.html" title="Kilauea’s longest recent eruption episodes came early"></iframe>
+      <div class="notes">
+        <p><strong>Takeaway:</strong> The longest episodes cluster near the beginning of the sequence, while most later eruptions tightened into shorter bursts that often lasted well under a day.</p>
+        <p><strong>Scope:</strong> This chart tracks episode start times and durations from late December 2024 onward. It describes timing, not lava volume, ash output, or eruption severity.</p>
+        <p><strong>Source:</strong> <a href="https://www.usgs.gov/volcanoes/kilauea/volcano-updates" target="_blank" rel="noreferrer">USGS, Kilauea volcano updates</a>.</p>
+      </div>
+    </section>
+  </main>
+  <script>
+    window.addEventListener("message", (event) => {
+      if (!event.data || event.data.type !== "viz-height") return;
+      const frame = document.getElementById("viz-frame");
+      if (!frame) return;
+      const nextHeight = Math.max(720, Math.min(1800, Number(event.data.height) || 1040));
+      if (Math.abs(frame.offsetHeight - nextHeight) > 6) {
+        frame.style.height = `${nextHeight}px`;
+      }
+    });
+  </script>
+</body>
+</html>

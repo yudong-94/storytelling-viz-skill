@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preview | Tokyo led U.S. overnight stays across Japan</title>
+  <style>
+    :root {
+      --bg: #efe7db;
+      --ink: #1d2a2d;
+      --muted: #5a696b;
+      --panel: rgba(255, 251, 246, 0.88);
+      --rule: rgba(29, 42, 45, 0.12);
+      --accent: #bf4f2f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, rgba(191, 79, 47, 0.08), transparent 26%),
+        linear-gradient(180deg, #f7f1e7 0%, var(--bg) 100%);
+    }
+    .page { max-width: 1080px; margin: 0 auto; padding: 26px 16px 40px; }
+    .intro { margin: 0 0 20px; }
+    .kicker {
+      margin: 0 0 10px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    h1 {
+      margin: 0 0 12px;
+      font: 600 clamp(2.5rem, 5.5vw, 5rem)/0.95 Georgia, "Times New Roman", serif;
+      letter-spacing: -0.03em;
+      max-width: 15ch;
+    }
+    .deck {
+      margin: 0;
+      line-height: 1.62;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 1.8vw, 1.18rem);
+    }
+    .artifact {
+      background: var(--panel);
+      border: 1px solid var(--rule);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 22px 50px rgba(49, 58, 61, 0.10);
+    }
+    iframe {
+      display: block;
+      width: 100%;
+      height: 860px;
+      border: 0;
+      background: transparent;
+    }
+    .notes {
+      display: grid;
+      gap: 10px;
+      padding: 18px 20px 22px;
+      border-top: 1px solid var(--rule);
+      background: rgba(255, 251, 246, 0.68);
+    }
+    .notes p { margin: 0; line-height: 1.55; color: var(--muted); }
+    .notes strong { color: var(--ink); }
+    .notes a { color: var(--ink); }
+    @media (max-width: 760px) {
+      .page { padding: 18px 10px 24px; }
+      h1 { max-width: 11ch; }
+      .artifact { border-radius: 18px; }
+      iframe { height: 820px; }
+      .notes { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="intro">
+      <p class="kicker">U.S. Visitors in Japan</p>
+      <h1>Tokyo led U.S. overnight stays across Japan, but the order below it shifted</h1>
+      <p class="deck">
+        Among the six prefectures that ranked highest in 2024, Tokyo stayed first throughout 2011-2024 while Kyoto, Osaka, Kanagawa, Chiba, and Okinawa traded places below it.
+      </p>
+    </section>
+    <section class="artifact">
+      <iframe id="viz-frame" src="./index.html" title="Tokyo led U.S. overnight stays across Japan"></iframe>
+      <div class="notes">
+        <p><strong>Takeaway:</strong> Tokyo remained the clear leader for U.S. visitor overnight stays, while Kyoto, Osaka, Kanagawa, Chiba, and Okinawa shifted positions below it.</p>
+        <p><strong>Scope:</strong> This chart follows only the six prefectures that ranked highest in 2024 for U.S. visitor overnight stays. The lines show rank within that selected six-prefecture cohort, not rank across all 47 prefectures.</p>
+        <p><strong>Source:</strong> <a href="https://statistics.jnto.go.jp/en/graph/#graph--inbound--prefecture--ranking" target="_blank" rel="noreferrer">Japan Tourism Statistics, JNTO, “Overnight Stays by Prefecture and Country/Area”</a>.</p>
+      </div>
+    </section>
+  </main>
+  <script>
+    const frame = document.getElementById("viz-frame");
+    window.addEventListener("message", (event) => {
+      if (!event.data || event.data.type !== "viz-height") return;
+      const nextHeight = Math.max(560, Math.min(1500, Number(event.data.height) || 860));
+      if (Math.abs(frame.offsetHeight - nextHeight) > 6) {
+        frame.style.height = `${nextHeight}px`;
+      }
+    });
+  </script>
+</body>
+</html>

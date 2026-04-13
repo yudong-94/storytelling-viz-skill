@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preview | Population size does not translate directly into households</title>
+  <style>
+    :root {
+      --bg: #efe7db;
+      --ink: #1d2a2d;
+      --muted: #5a696b;
+      --panel: rgba(255, 251, 246, 0.9);
+      --rule: rgba(29, 42, 45, 0.12);
+      --accent: #2f6c98;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, rgba(47, 108, 152, 0.08), transparent 28%),
+        linear-gradient(180deg, #f7f1e7 0%, var(--bg) 100%);
+    }
+    .page { max-width: 1080px; margin: 0 auto; padding: 26px 16px 40px; }
+    .intro { margin: 0 0 22px; }
+    .kicker {
+      margin: 0 0 10px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    h1 {
+      margin: 0 0 12px;
+      font: 600 clamp(2.5rem, 5.4vw, 5rem)/0.95 Georgia, "Times New Roman", serif;
+      letter-spacing: -0.03em;
+      max-width: 16ch;
+    }
+    .deck {
+      margin: 0;
+      line-height: 1.62;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 1.8vw, 1.18rem);
+    }
+    .artifact {
+      background: var(--panel);
+      border: 1px solid var(--rule);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 22px 50px rgba(49, 58, 61, 0.10);
+    }
+    iframe { display: block; width: 100%; height: 980px; border: 0; background: transparent; }
+    .notes {
+      display: grid;
+      gap: 10px;
+      padding: 18px 20px 22px;
+      border-top: 1px solid var(--rule);
+      background: rgba(255, 251, 246, 0.7);
+    }
+    .notes p { margin: 0; line-height: 1.55; color: var(--muted); }
+    .notes strong { color: var(--ink); }
+    .notes a { color: var(--ink); }
+    @media (max-width: 760px) {
+      .page { padding: 18px 10px 24px; }
+      h1 { max-width: 11ch; }
+      .artifact { border-radius: 18px; }
+      iframe { height: 900px; }
+      .notes { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="intro">
+      <p class="kicker">Household Structure</p>
+      <h1>Population size alone does not explain how many households a country has</h1>
+      <p class="deck">
+        Countries with similar population scale can sit far apart in household count because household size changes the denominator. Smaller households create more homes for the same number of people; larger households compress them.
+      </p>
+    </section>
+    <section class="artifact">
+      <iframe id="viz-frame" src="./index.html" title="Population size does not translate directly into households"></iframe>
+      <div class="notes">
+        <p><strong>Takeaway:</strong> China and India show the main contrast: similar population magnitude, but very different household totals because the average number of people per household is much lower in China.</p>
+        <p><strong>Scope:</strong> This is a cross-country snapshot. Household-size and composition inputs come from different country-year observations, so the chart is best read as a structural comparison rather than a same-year census.</p>
+        <p><strong>Source:</strong> <a href="https://en.wikipedia.org/wiki/List_of_countries_by_number_of_households" target="_blank" rel="noreferrer">Wikipedia, List of countries by number of households</a>.</p>
+      </div>
+    </section>
+  </main>
+  <script>
+    window.addEventListener("message", (event) => {
+      if (!event.data || event.data.type !== "viz-height") return;
+      const frame = document.getElementById("viz-frame");
+      if (!frame) return;
+      const nextHeight = Math.max(620, Math.min(1600, Number(event.data.height) || 980));
+      if (Math.abs(frame.offsetHeight - nextHeight) > 6) {
+        frame.style.height = `${nextHeight}px`;
+      }
+    });
+  </script>
+</body>
+</html>

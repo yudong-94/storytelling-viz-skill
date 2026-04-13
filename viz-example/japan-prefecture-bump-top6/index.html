@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tokyo Led U.S. Overnight Stays Across Japan</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    :root {
+      --bg: #f3eee5;
+      --panel: rgba(255, 251, 245, 0.92);
+      --ink: #1f292b;
+      --muted: #5d6b6e;
+      --accent: #bf4f2f;
+      --rule: rgba(31, 41, 43, 0.08);
+      --shadow: 0 22px 54px rgba(63, 58, 50, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      background:
+        radial-gradient(circle at top right, rgba(191, 79, 47, 0.10), transparent 24%),
+        radial-gradient(circle at 12% 18%, rgba(54, 118, 134, 0.08), transparent 22%),
+        linear-gradient(180deg, #f8f3ec 0%, var(--bg) 100%);
+    }
+    .frame {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 28px 18px 20px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--rule);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .header {
+      padding: 28px 28px 14px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .eyebrow {
+      margin: 0 0 8px;
+      font: 700 0.78rem/1.2 Arial, Helvetica, sans-serif;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.1rem);
+      line-height: 1.02;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      max-width: 13ch;
+    }
+    .subtitle {
+      margin: 14px 0 0;
+      max-width: 66ch;
+      font: 400 1rem/1.55 Arial, Helvetica, sans-serif;
+      color: var(--muted);
+    }
+    .chart-wrap { padding: 12px 12px 0; }
+    #chart { width: 100%; height: 620px; }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      padding: 12px 24px 10px;
+    }
+    .summary-card {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.56);
+      border: 1px solid rgba(31, 41, 43, 0.08);
+      min-height: 82px;
+    }
+    .summary-label {
+      margin: 0 0 6px;
+      font: 700 0.72rem/1.2 Arial, Helvetica, sans-serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .summary-value {
+      margin: 0;
+      font: 600 1.28rem/1.15 Georgia, "Times New Roman", serif;
+      color: var(--ink);
+    }
+    .summary-note {
+      margin: 6px 0 0;
+      font: 400 0.92rem/1.45 Arial, Helvetica, sans-serif;
+      color: var(--muted);
+    }
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 24px 24px;
+      border-top: 1px solid var(--rule);
+      font: 400 0.88rem/1.5 Arial, Helvetica, sans-serif;
+      color: var(--muted);
+    }
+    .footer a { color: var(--ink); }
+    @media (max-width: 760px) {
+      .frame { padding: 16px 10px 16px; }
+      .panel { border-radius: 18px; }
+      .header { padding: 22px 18px 12px; }
+      .chart-wrap { padding: 8px 4px 0; }
+      #chart { height: 680px; }
+      .summary { grid-template-columns: 1fr; padding: 8px 18px 8px; }
+      .footer { flex-direction: column; padding: 14px 18px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main id="viz-root" class="frame">
+    <section class="panel">
+      <header class="header">
+        <p class="eyebrow">U.S. Visitors in Japan</p>
+        <h1>Rank shifts within Japan’s 2024 top six prefectures</h1>
+        <p class="subtitle">
+          U.S. visitor overnight stays in Japan, re-ranked annually within the six prefectures that ranked highest in 2024.
+        </p>
+      </header>
+      <div class="chart-wrap">
+        <div id="chart" aria-label="Bump chart of top six prefectures for U.S. overnight stays in Japan"></div>
+      </div>
+      <section class="summary" aria-label="Key context">
+        <article class="summary-card">
+          <p class="summary-label">Top 2024 prefecture</p>
+          <p class="summary-value">Tokyo · 7.17M</p>
+          <p class="summary-note">The cohort leader in the latest year and the long-run number-one line.</p>
+        </article>
+        <article class="summary-card">
+          <p class="summary-label">Second 2024 prefecture</p>
+          <p class="summary-value">Kyoto · 2.04M</p>
+          <p class="summary-note">The second-ranked prefecture in 2024, ahead of Osaka in the latest year.</p>
+        </article>
+        <article class="summary-card">
+          <p class="summary-label">Read this as</p>
+          <p class="summary-value">Ranks within a selected cohort</p>
+          <p class="summary-note">The chart tracks only the six prefectures that ranked highest in 2024, not all 47 prefectures.</p>
+        </article>
+      </section>
+      <footer class="footer">
+        <div>
+          Source: <a href="https://statistics.jnto.go.jp/en/graph/#graph--inbound--prefecture--ranking" target="_blank" rel="noreferrer">Japan Tourism Statistics, JNTO, “Overnight Stays by Prefecture and Country/Area”</a>.
+          Values shown from the provided dataset for United States, Overall.
+        </div>
+        <div>Chart logic: six-prefecture cohort selected by 2024 overnight stays, then re-ranked within that same cohort for each year from 2011 to 2024.</div>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    const series = {
+      Tokyo: {
+        color: "#1f6f8b",
+        values: [
+          [2011, 1, 718780],[2012, 1, 1009890],[2013, 1, 1188080],[2014, 1, 1318770],[2015, 1, 1625940],[2016, 1, 2229710],[2017, 1, 2795110],[2018, 1, 4229190],[2019, 1, 4453740],[2020, 1, 409560],[2021, 1, 28970],[2022, 1, 551630],[2023, 1, 3822720],[2024, 1, 7168160]
+        ]
+      },
+      Kyoto: {
+        color: "#8a62c2",
+        values: [
+          [2011, 3, 144110],[2012, 3, 249610],[2013, 2, 326680],[2014, 2, 414010],[2015, 2, 616100],[2016, 2, 954920],[2017, 2, 1257800],[2018, 2, 1718800],[2019, 2, 1774970],[2020, 3, 141060],[2021, 5, 8700],[2022, 3, 273780],[2023, 2, 1118660],[2024, 2, 2036890]
+        ]
+      },
+      Osaka: {
+        color: "#c96b3b",
+        values: [
+          [2011, 5, 130230],[2012, 5, 152550],[2013, 4, 188860],[2014, 4, 243770],[2015, 4, 400710],[2016, 3, 575540],[2017, 3, 844720],[2018, 3, 1218750],[2019, 3, 1335530],[2020, 2, 162170],[2021, 2, 9540],[2022, 2, 304350],[2023, 3, 777790],[2024, 3, 1426860]
+        ]
+      },
+      Kanagawa: {
+        color: "#5d6b6e",
+        values: [
+          [2011, 4, 139540],[2012, 4, 167600],[2013, 5, 188510],[2014, 5, 223170],[2015, 5, 239060],[2016, 5, 301820],[2017, 5, 355210],[2018, 5, 513200],[2019, 4, 578460],[2020, 4, 116710],[2021, 3, 9280],[2022, 4, 89500],[2023, 4, 348950],[2024, 4, 690830]
+        ]
+      },
+      Chiba: {
+        color: "#6d8f38",
+        values: [
+          [2011, 2, 285600],[2012, 2, 290860],[2013, 3, 239300],[2014, 3, 286850],[2015, 3, 350960],[2016, 4, 338380],[2017, 4, 394720],[2018, 4, 526230],[2019, 5, 533350],[2020, 5, 86350],[2021, 4, 8740],[2022, 5, 82410],[2023, 5, 279750],[2024, 5, 582620]
+        ]
+      },
+      Okinawa: {
+        color: "#d08b2d",
+        values: [
+          [2011, 6, 89640],[2012, 6, 89980],[2013, 6, 128850],[2014, 6, 145680],[2015, 6, 157100],[2016, 6, 178320],[2017, 6, 266170],[2018, 6, 421570],[2019, 6, 445110],[2020, 6, 67260],[2021, 6, 3420],[2022, 6, 55580],[2023, 6, 280560],[2024, 6, 568140]
+        ]
+      }
+    };
+
+    const years = [2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024];
+
+    const traces = Object.entries(series).map(([name, meta]) => ({
+      type: "scatter",
+      mode: "lines+markers",
+      name,
+      x: meta.values.map((d) => d[0]),
+      y: meta.values.map((d) => d[1]),
+      line: {
+        color: meta.color,
+        width: name === "Tokyo" ? 4 : name === "Kyoto" || name === "Osaka" ? 3.2 : 2.2,
+        shape: "linear"
+      },
+      marker: {
+        size: meta.values.map((d) => d[0] === 2024 ? 8 : 6),
+        color: meta.color,
+        line: { color: "#fffaf2", width: 1.5 }
+      },
+      customdata: meta.values.map((d) => [d[2]]),
+      hovertemplate: `<b>${name}</b><br>Year: %{x}<br>Rank in selected top-6 cohort: %{y}<br>U.S. visitor overnight stays: %{customdata[0]:,}<extra></extra>`
+    }));
+
+    const endpointAnnotations = Object.entries(series).map(([name, meta]) => {
+      const last = meta.values[meta.values.length - 1];
+      return {
+        x: 2024.28,
+        y: last[1],
+        xref: "x",
+        yref: "y",
+        text: name,
+        showarrow: false,
+        xanchor: "left",
+        yanchor: "middle",
+        align: "left",
+        font: {
+          family: "Arial, sans-serif",
+          size: name === "Tokyo" || name === "Kyoto" || name === "Osaka" ? 12.5 : 12,
+          color: meta.color
+        }
+      };
+    });
+
+    const mobileOrder = Object.entries(series)
+      .map(([name, meta]) => ({ name, value: meta.values[meta.values.length - 1][2], color: meta.color }))
+      .sort((a, b) => b.value - a.value);
+
+    const mobileTrace = {
+      type: "bar",
+      orientation: "h",
+      x: mobileOrder.map((d) => d.value).reverse(),
+      y: mobileOrder.map((d) => d.name).reverse(),
+      marker: {
+        color: mobileOrder.map((d) => d.color).reverse(),
+        line: { color: "#fffaf2", width: 1 }
+      },
+      text: mobileOrder.map((d) => `${(d.value / 1000000).toFixed(2)}M`).reverse(),
+      textposition: "outside",
+      cliponaxis: false,
+      hovertemplate: "<b>%{y}</b><br>2024 overnight stays: %{x:,}<extra></extra>"
+    };
+
+    const baseLayout = {
+      paper_bgcolor: "rgba(0,0,0,0)",
+      plot_bgcolor: "rgba(0,0,0,0)",
+      margin: { l: 72, r: 180, t: 16, b: 56 },
+      showlegend: false,
+      xaxis: {
+        tickmode: "array",
+        tickvals: [2011, 2014, 2017, 2020, 2024],
+        range: [2011, 2025.1],
+        tickfont: { family: "Arial, sans-serif", size: 12, color: "#5d6b6e" },
+        showgrid: false,
+        zeroline: false,
+        linecolor: "rgba(31, 41, 43, 0.12)"
+      },
+      yaxis: {
+        autorange: "reversed",
+        tickmode: "array",
+        tickvals: [1,2,3,4,5,6],
+        ticktext: ["1", "2", "3", "4", "5", "6"],
+        title: {
+          text: "Rank within selected top-6 cohort",
+          font: { family: "Arial, sans-serif", size: 13, color: "#5d6b6e" }
+        },
+        tickfont: { family: "Arial, sans-serif", size: 12, color: "#5d6b6e" },
+        gridcolor: "rgba(31, 41, 43, 0.10)",
+        zeroline: false,
+        range: [6.4, 0.6]
+      },
+      annotations: endpointAnnotations
+    };
+
+    const mobileLayout = {
+      paper_bgcolor: "rgba(0,0,0,0)",
+      plot_bgcolor: "rgba(0,0,0,0)",
+      margin: { l: 92, r: 52, t: 16, b: 44 },
+      showlegend: false,
+      xaxis: {
+        title: {
+          text: "2024 overnight stays",
+          font: { family: "Arial, sans-serif", size: 12, color: "#5d6b6e" }
+        },
+        tickfont: { family: "Arial, sans-serif", size: 11, color: "#5d6b6e" },
+        gridcolor: "rgba(31, 41, 43, 0.10)",
+        zeroline: false
+      },
+      yaxis: {
+        tickfont: { family: "Arial, sans-serif", size: 11, color: "#5d6b6e" },
+        showgrid: false
+      },
+      annotations: [
+        {
+          xref: "paper",
+          yref: "paper",
+          x: 0,
+          y: 1.1,
+          xanchor: "left",
+          showarrow: false,
+          text: "Mobile fallback: 2024 ranking for the same top-six U.S. visitor cohort",
+          font: { family: "Arial, sans-serif", size: 11, color: "#5d6b6e" }
+        }
+      ]
+    };
+
+    const config = { displayModeBar: false, responsive: true };
+
+    const chartEl = document.getElementById("chart");
+    const rootEl = document.getElementById("viz-root");
+
+    function reportHeight() {
+      const height = Math.ceil(rootEl.getBoundingClientRect().height);
+      if (window.parent !== window) {
+        window.parent.postMessage({ type: "viz-height", height }, "*");
+      }
+    }
+
+    const useMobileFallback = window.matchMedia("(max-width: 760px)").matches;
+    const plotData = useMobileFallback ? [mobileTrace] : traces;
+    const plotLayout = useMobileFallback ? mobileLayout : baseLayout;
+
+    Plotly.newPlot(chartEl, plotData, plotLayout, config).then(() => {
+      reportHeight();
+      window.addEventListener("resize", reportHeight);
+      if ("ResizeObserver" in window) {
+        const observer = new ResizeObserver(reportHeight);
+        observer.observe(rootEl);
+      }
+    });
+  </script>
+</body>
+</html>
