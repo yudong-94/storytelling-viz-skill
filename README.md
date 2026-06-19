@@ -75,8 +75,8 @@ If you change the core workflow, update `SKILL.md` first. If you change Codex-sp
 Clone the repo, then run one of:
 
 ```bash
-./install.sh codex
-./install.sh claude
+bash install.sh codex
+bash install.sh claude
 ```
 
 Install targets:
