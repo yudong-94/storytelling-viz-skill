@@ -109,9 +109,13 @@ The skill is opinionated about process:
 - it prefers structural simplification over annotation-heavy fixes
 - it expects rendered visual QA, not just code completion
 
+## License
+
+This project’s original code, documentation, and skill instructions are licensed under the [MIT License](LICENSE). Third-party datasets and source materials remain subject to their respective owners’ terms.
+
 ## Examples
 
-The current example gallery lives in [`viz-example/`](/Users/hzdy1994/Documents/GitHub/storytelling-viz-skill/viz-example). It includes ranking, cohort, timeline, scatter, and bump-chart cases such as:
+The current example gallery lives in [`viz-example/`](viz-example/). It includes ranking, cohort, timeline, scatter, and bump-chart cases such as:
 
 - `jobs-held-by-age-sex`
 - `marriage-by-age-education`
